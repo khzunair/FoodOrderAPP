@@ -5,11 +5,12 @@ export default function MenuStack() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: "Menu"
-            // , headerShown: false
-         }}
+        options={{
+          title: "Menu",
+          // , headerShown: false
+        }}
       />
-      <Stack.Screen name="product" />
+      <Stack.Screen name="[id]" options={{ title: "Product" }} />
     </Stack>
   );
 }

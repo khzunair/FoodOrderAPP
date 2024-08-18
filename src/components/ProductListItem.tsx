@@ -13,7 +13,7 @@ interface ProductListItemProps {
   product: Product;
 }
 
-const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
+export const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 export const ProductListItem = ({ product }: ProductListItemProps) => {
   const href: Href = `/menu/${product.id}` as const;

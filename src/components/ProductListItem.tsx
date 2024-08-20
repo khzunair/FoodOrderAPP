@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Colors from "@/src/app/constants/Colors";
-import { Link, Href } from "expo-router";
+import { Link, Href, useSegments } from "expo-router";
 
 interface Product {
   id: number;
@@ -16,7 +16,13 @@ interface ProductListItemProps {
 export const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 export const ProductListItem = ({ product }: ProductListItemProps) => {
-  const href: Href = `/menu/${product.id}` as const;
+
+  const segments = useSegments();
+  // console.log(segments);
+
+  const href: Href = `/${segments[0]}/menu/${product.id}` as const;
+
+
 
   return (
     <Link href={href} asChild>

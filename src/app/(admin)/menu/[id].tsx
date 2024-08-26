@@ -1,98 +1,40 @@
-import products from "@/assets/data/products";
-import { Stack, useLocalSearchParams, useRouter, Link } from "expo-router";
-import React from "react";
-import { View, Text, Image, StyleSheet, Pressable, Button } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import orders from '@/assets/data/orders';
+import OrderListItem from '../../../components/OrderListItem';
+import OrderItemListItem from '../../../components/OrderListItem';
 
-import { useCart } from "@/src/providers/CartProvider";
-import { PizzaSize } from "@/src/types";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Colors from "../../constants/Colors";
-
-const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
-
-const Product = () => {
-  const { addItems } = useCart();
+const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams();
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>("L");
-  const product = products.find((products) => products.id.toString() === id);
 
-  const router = useRouter();
+  const order = orders.find((o) => o.id.toString() === id);
 
-  // const addItem = useCart().addItems;
-
-  const addToCart = () => {
-    if (!product) {
-      return;
-    }
-
-    // console.warn("Add to cart", selectedSize, product);
-    addItems(product, selectedSize);
-    router.push("/cart");
-  };
-
-  if (!product) {
-    return (
-      <>
-        <Text>Product not found!</Text>
-      </>
-    );
+  if (!order) {
+    return <Text>Order not found!</Text>;
   }
+
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: "Menu",
-          // headerShown: false
-          headerRight: () => (
-            <Link href={`/(admin)/menu/create?id=${id}`} asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="pencil-square-o"
-                    size={25}
-                    color={Colors.light.tint}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Stack.Screen options={{ title: product?.name }} />
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <Stack.Screen options={{ title: `Order #${order.id}` }} />
 
-      <Text style={styles.price}>${product.price}</Text>
+      <OrderListItem order={order} />
+
+      <FlatList
+        data={order.order_items}
+        renderItem={({ item }) => <OrderItemListItem item={item} />}  // Pass `item` instead of `order`
+        contentContainerStyle={{ gap: 10 }}
+        ListHeaderComponent={()=> OrderItemListItem({ item: order.order_items[0] })}  // Pass `item` instead of `order`
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     padding: 10,
     flex: 1,
-  },
-  image: {
-    width: "100%",
-    // height: 200,
-    aspectRatio: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  description: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#ff6b6b",
+    gap: 10,
   },
 });
 
-export default Product;
+export default OrderDetailScreen;

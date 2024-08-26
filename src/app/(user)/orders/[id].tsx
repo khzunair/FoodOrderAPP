@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
-import orders from "../../../../assets/data/orders";
-import OrderItemListItem from "../../../components/OrderListItem";
-import OrderListItem from "../../../components/OrderListItem";
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import orders from '@/assets/data/orders';
+import OrderListItem from '../../../components/OrderListItem';
+import OrderItemListItem from '../../../components/OrderListItem';
 
 const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams();
@@ -17,15 +17,14 @@ const OrderDetailScreen = () => {
     <View style={styles.container}>
       <Stack.Screen options={{ title: `Order #${order.id}` }} />
 
-      {/* <OrderListItem order={order} /> */}
+      <OrderListItem order={order} />
 
       <FlatList
-  data={order.order_items}
-  renderItem={({ item }) => <OrderItemListItem item={item} />}
-  keyExtractor={(item) => item.id.toString()}  // Ensure each id is unique
-  contentContainerStyle={{ gap: 10 }}
-/>
-
+        data={order.order_items}
+        renderItem={({ item }) => <OrderItemListItem item={item} />}  // Pass `item` instead of `order`
+        contentContainerStyle={{ gap: 10 }}
+        ListHeaderComponent={()=> OrderItemListItem({ item: order.order_items[0] })}  // Pass `item` instead of `order`
+      />
     </View>
   );
 };

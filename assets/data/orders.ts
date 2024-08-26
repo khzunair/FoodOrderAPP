@@ -6,14 +6,14 @@ const now = dayjs();
 
 const orders: Order[] = [
   {
-    id: 213123,
+    id: 23123,
     created_at: now.subtract(1, 'hour').toISOString(),
     total: 31.4,
     status: 'Cooking',
     user_id: '1',
     order_items: [
       {
-        id: 1001,
+        id: 1,
         order_id: 23123,
         size: 'M',
         quantity: 2,
@@ -21,8 +21,8 @@ const orders: Order[] = [
         products: products[0],
       },
       {
-        id: 1002,
-        order_id: 231223,
+        id: 2,
+        order_id: 23123,
         size: 'L',
         quantity: 1,
         product_id: products[1].id,
@@ -38,8 +38,8 @@ const orders: Order[] = [
     user_id: '1',
     order_items: [
       {
-        id: 2001,
-        order_id: 322145,
+        id: 1,
+        order_id: 32145,
         size: 'M',
         quantity: 2,
         product_id: products[3].id,
@@ -48,31 +48,31 @@ const orders: Order[] = [
     ],
   },
   {
-    id: 213445,
+    id: 23445,
     created_at: now.subtract(3, 'weeks').toISOString(),
     total: 11.4,
     status: 'Delivered',
     user_id: '1',
     order_items: [
       {
-        id: 3001,
-        order_id: 234145,
+        id: 1,
+        order_id: 23445,
         size: 'M',
         quantity: 1,
         product_id: products[3].id,
         products: products[3],
       },
       {
-        id: 3002,
-        order_id: 231445,
+        id: 2,
+        order_id: 23445,
         size: 'M',
         quantity: 1,
         product_id: products[7].id,
         products: products[7],
       },
       {
-        id: 3003,
-        order_id: 234345,
+        id: 3,
+        order_id: 23445,
         size: 'L',
         quantity: 1,
         product_id: products[8].id,

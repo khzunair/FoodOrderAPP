@@ -1,10 +1,8 @@
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import orders from '@/assets/data/orders';
-import OrderItemListItem from '../../../components/OrderListItem';
 import OrderListItem from '../../../components/OrderListItem';
-import Colors from '../../constants/Colors';
-import { OrderStatusList } from '@/src/types';
+import OrderItemListItem from '../../../components/OrderListItem';
 
 const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams();
@@ -23,43 +21,9 @@ const OrderDetailScreen = () => {
 
       <FlatList
         data={order.order_items}
-        renderItem={({ item }) => <OrderItemListItem item={item} />}
+        renderItem={({ item }) => <OrderItemListItem item={item} />}  // Pass `item` instead of `order`
         contentContainerStyle={{ gap: 10 }}
-        ListHeaderComponent={()=><OrderListItem order={order} />}
-        ListFooterComponent={() => ( 
-<>
-  <Text style={{ fontWeight: 'bold' }}>Status</Text>
-  <View style={{ flexDirection: 'row', gap: 5 }}>
-    {OrderStatusList.map((status) => (
-      <Pressable
-        key={status}
-        onPress={() => console.warn('Update status')}
-        style={{
-          borderColor: Colors.light.tint,
-          borderWidth: 1,
-          padding: 10,
-          borderRadius: 5,
-          marginVertical: 10,
-          backgroundColor:
-            order.status === status
-              ? Colors.light.tint
-              : 'transparent',
-        }}
-      >
-        <Text
-          style={{
-            color:
-              order.status === status ? 'white' : Colors.light.tint,
-          }}
-        >
-          {status}
-        </Text>
-      </Pressable>
-    ))}
-  </View>
-</>
-
-        )}
+        ListHeaderComponent={()=> OrderItemListItem({ item: order.order_items[0] })}  // Pass `item` instead of `order`
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import { defaultPizzaImage } from "@/src/components/ProductListItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -11,7 +11,13 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Colors from "../../constants/Colors";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import {
+  useDeleteProduct,
+  useInsertProduct,
+  useProduct,
+  useUpdateProduct,
+} from "@/src/api/products";
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
@@ -19,7 +25,9 @@ const CreateProductScreen = () => {
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === "string" ? idString : idString?.[0]);
+  const router = useRouter();
 
   const isUpdating = !!id;
 
@@ -58,19 +66,34 @@ const CreateProductScreen = () => {
     if (!validateInput()) {
       return;
     }
-    resetValues();
-    console.warn("Creating Product...", name, price);
+    insertProdcut(
+      { name, price: parseFloat(price), image },
+      {
+        onSuccess: () => {
+          // console.log("Product created successfully");
+          resetValues();
+          router.back();
+        },
+      }
+    );
   };
 
   const onUpdate = () => {
-    // Create product
-    // console.warn("Product created", name, price);
     if (!validateInput()) {
       return;
     }
-    resetValues();
-    console.warn("Updating Product...", name, price);
+    updateProduct(
+      { id, name, price: parseFloat(price), image },
+      {
+        onSuccess: () => {
+          // console.log("Product updated successfully");
+          resetValues();
+          router.back();
+        },
+      }
+    );
   };
+  
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -89,7 +112,13 @@ const CreateProductScreen = () => {
   };
 
   const onDelete = () => {
-    console.warn("Deleting Product...", name, price);
+    // console.warn("Deleting Product...", name, price);
+    deleteProduct(id,{
+      onSuccess: () => {
+        // resetFields();
+        router.replace('/(admin)');
+      }
+    })
   };
   const confirmDelete = () => {
     Alert.alert("Confirm", "Are you sure you want to delete this product?", [
@@ -99,6 +128,19 @@ const CreateProductScreen = () => {
       { text: "Delete", style: "destructive", onPress: onDelete },
     ]);
   };
+
+  const { mutate: insertProdcut } = useInsertProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const { mutate: deleteProduct } = useDeleteProduct();
+  const { data: updatingProduct } = useProduct(id);
+
+  useEffect(() => {
+    if (updatingProduct) {
+      setName(updatingProduct.name);
+      setPrice(updatingProduct.price.toString());
+      setImage(updatingProduct.image);
+    }
+  }, [updatingProduct]);
 
   return (
     <View style={styles.container}>

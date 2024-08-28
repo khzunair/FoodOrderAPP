@@ -44,7 +44,6 @@ const Index = () => {
         </TouchableOpacity>
       </Link>
 
-      <Button title="Sign out" onPress={()=> supabase.auth.signOut()}  />
     </View>
   );
 };

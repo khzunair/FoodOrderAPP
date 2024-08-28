@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Colors from "@/src/app/constants/Colors";
 import { Link, Href, useSegments } from "expo-router";
+import { Button } from "react-native-elements";
+import { supabase } from "../lib/supabase";
 
 interface Product {
   id: number;
@@ -25,6 +27,7 @@ export const ProductListItem = ({ product }: ProductListItemProps) => {
 
 
   return (
+    <>
     <Link href={href} asChild>
       <Pressable style={styles.container}>
         <Image
@@ -36,6 +39,8 @@ export const ProductListItem = ({ product }: ProductListItemProps) => {
         <Text style={styles.price}>${product.price}</Text>
       </Pressable>
     </Link>
+    {/* <Button title="Sign out" onPress={()=> supabase.auth.signOut()}  /> */}
+    </>
   );
 };
 

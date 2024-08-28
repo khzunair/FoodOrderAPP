@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { CartItem, Product } from "../types";
 import { randomUUID } from "expo-crypto";
+import { Tables } from "../database.types";
 
 
 const CartContext = createContext<CartType>({
@@ -12,7 +13,7 @@ const CartContext = createContext<CartType>({
 
 type CartType = {
   items: CartItem[];
-  addItems: (product: Product, size: CartItem["size"]) => void;
+  addItems: (product: Tables<"products">, size: CartItem["size"]) => void;
   updateQuantity: (itemId: string, amount: -1 | 1) => void;
   total: number;
 };

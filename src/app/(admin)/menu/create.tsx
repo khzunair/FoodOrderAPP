@@ -112,22 +112,26 @@ const CreateProductScreen = () => {
   };
 
   const onDelete = () => {
-    // console.warn("Deleting Product...", name, price);
-    deleteProduct(id,{
+    deleteProduct(id, {
       onSuccess: () => {
-        // resetFields();
+        console.log("Product deleted successfully"); // For debugging
         router.replace('/(admin)');
-      }
-    })
+      },
+      onError: (error) => {
+        console.error("Error deleting product: ", error.message); // For debugging
+        Alert.alert("Error", "Failed to delete the product.");
+      },
+    });
   };
+
+  
   const confirmDelete = () => {
     Alert.alert("Confirm", "Are you sure you want to delete this product?", [
-      {
-        text: "Cancel",
-      },
+      { text: "Cancel" },
       { text: "Delete", style: "destructive", onPress: onDelete },
     ]);
   };
+  
 
   const { mutate: insertProdcut } = useInsertProduct();
   const { mutate: updateProduct } = useUpdateProduct();

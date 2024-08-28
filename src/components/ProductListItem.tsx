@@ -1,18 +1,12 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Colors from "@/src/app/constants/Colors";
 import { Link, Href, useSegments } from "expo-router";
-import { Button } from "react-native-elements";
-import { supabase } from "../lib/supabase";
+// import { Button } from "react-native-elements";
+// import { supabase } from "../lib/supabase";
+import { Tables } from "../database.types";
 
-interface Product {
-  id: number;
-  image: string;
-  name: string;
-  price: number;
-}
-
-interface ProductListItemProps {
-  product: Product;
+type ProductListItemProps ={
+  product: Tables<"products">;
 }
 
 export const defaultPizzaImage = "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";

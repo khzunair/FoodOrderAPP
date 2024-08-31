@@ -6,6 +6,7 @@ import { FontAwesome } from "@expo/vector-icons";
 
 import {defaultPizzaImage} from './ProductListItem'
 import Colors from "../app/constants/Colors";
+import RemoteImage from "./RemoteImage";
 
 
 
@@ -18,11 +19,8 @@ type CartListItemProps = {
     const { updateQuantity } = useCart();
     return (
       <View style={styles.container}>
-        <Image
-          source={{ uri: cartItem.product.image || defaultPizzaImage }}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <RemoteImage path={cartItem.product.image} fallback={defaultPizzaImage} style={styles.image} 
+          resizeMode="contain" />
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{cartItem.product.name}</Text>
           <View style={styles.subtitleContainer}>

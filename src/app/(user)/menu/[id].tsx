@@ -1,20 +1,35 @@
-import products from "@/assets/data/products";
+// import products from "@/assets/data/products";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { View, Text, Image, StyleSheet, Pressable, Button } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import { useState } from "react";
 
 import { useCart } from "@/src/providers/CartProvider";
 import { PizzaSize } from "@/src/types";
+import { useProduct } from "@/src/api/products";
+import { Button } from "react-native-elements";
+import { defaultPizzaImage } from "@/src/components/ProductListItem";
+import RemoteImage from "@/src/components/RemoteImage";
 
 const sizes : PizzaSize[] = ["S", "M", "L", "XL"];
 
 const Product = () => {
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
+  const { data: product, error, isLoading } = useProduct(id);
+
 
   const {addItems} = useCart();
-  const { id } = useLocalSearchParams();
+  // const { id } = useLocalSearchParams();
   const [selectedSize, setSelectedSize] = useState<PizzaSize>("L");
-  const product = products.find((products) => products.id.toString() === id);
+  // const product = products.find((products) => products.id.toString() === id);
 
   const router = useRouter();
   
@@ -31,18 +46,22 @@ const Product = () => {
     router.push("/cart");
   }
 
-
-  if (!product) {
-    return (
-      <>
-        <Text>Product not found!</Text>
-      </>
-    );
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
+
+  if (error) {
+    return <Text>Failed to fetch products</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: product?.name }} />
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <RemoteImage
+      //  source={{ uri: product?.image || defaultPizzaImage}}
+      path={product?.image}
+      fallback={defaultPizzaImage}
+        style={styles.image} />
       <Text>Select Size</Text>
       <View style={styles.sizes}>
         {sizes.map((size) => (
@@ -65,7 +84,7 @@ const Product = () => {
           </Pressable>
         ))}
       </View>
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.price}>${product?.price}</Text>
       <Button onPress={addToCart} title="Add to Cart" />
     </View>
   );

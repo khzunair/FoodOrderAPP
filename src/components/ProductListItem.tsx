@@ -4,6 +4,7 @@ import { Link, Href, useSegments } from "expo-router";
 // import { Button } from "react-native-elements";
 // import { supabase } from "../lib/supabase";
 import { Tables } from "../database.types";
+import RemoteImage from "./RemoteImage";
 
 type ProductListItemProps ={
   product: Tables<"products">;
@@ -24,8 +25,10 @@ export const ProductListItem = ({ product }: ProductListItemProps) => {
     <>
     <Link href={href} asChild>
       <Pressable style={styles.container}>
-        <Image
-          source={{ uri: product.image || defaultPizzaImage }}
+        <RemoteImage
+          // source={{ uri: product.image || defaultPizzaImage }}
+          path={product.image}
+          fallback={defaultPizzaImage}
           style={styles.image}
           resizeMode="contain"
         />

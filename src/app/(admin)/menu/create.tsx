@@ -19,6 +19,11 @@ import {
   useUpdateProduct,
 } from "@/src/api/products";
 
+import * as FileSystem from "expo-file-system";
+import { randomUUID } from "expo-crypto";
+import { supabase } from "@/src/lib/supabase";
+import { decode } from "base64-arraybuffer";
+
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -60,14 +65,17 @@ const CreateProductScreen = () => {
       onCreate();
     }
   };
-  const onCreate = () => {
+  const onCreate = async () => {
     // Create product
     // console.warn("Product created", name, price);
     if (!validateInput()) {
       return;
     }
+
+    const imagePath = await uploadImage();
+
     insertProdcut(
-      { name, price: parseFloat(price), image },
+      { name, price: parseFloat(price), image: imagePath },
       {
         onSuccess: () => {
           // console.log("Product created successfully");
@@ -78,12 +86,15 @@ const CreateProductScreen = () => {
     );
   };
 
-  const onUpdate = () => {
+  const onUpdate = async () => {
     if (!validateInput()) {
       return;
     }
+
+    const imagePath = await uploadImage();
+
     updateProduct(
-      { id, name, price: parseFloat(price), image },
+      { id, name, price: parseFloat(price), image: imagePath },
       {
         onSuccess: () => {
           // console.log("Product updated successfully");
@@ -145,6 +156,27 @@ const CreateProductScreen = () => {
       setImage(updatingProduct.image);
     }
   }, [updatingProduct]);
+
+  const uploadImage = async () => {
+    if (!image?.startsWith('file://')) {
+      return;
+    }
+  
+    const base64 = await FileSystem.readAsStringAsync(image, {
+      encoding: 'base64',
+    });
+    const filePath = `${randomUUID()}.png`;
+    const contentType = 'image/png';
+    const { data, error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, decode(base64), { contentType });
+
+      console.log(error);
+  
+    if (data) {
+      return data.path;
+    }
+  };
 
   return (
     <View style={styles.container}>

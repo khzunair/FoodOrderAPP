@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import { defaultPizzaImage } from '@/src/components/ProductListItem';
 import { useState } from 'react';
-import { Button } from 'react-native-elements';
+// import { Button } from 'react-native-elements';
 import { useCart } from '@/src/providers/CartProvider';
 import { PizzaSize } from '@/src/types';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import { useProduct } from '@/src/api/products';
+import RemoteImage from '@/src/components/RemoteImage';
 // import RemoteImage from '@/components/RemoteImage';
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
@@ -68,16 +69,18 @@ const ProductDetailsScreen = () => {
         }}
       />
 
-      <Stack.Screen options={{ title: product.name }} />
+      <Stack.Screen options={{ title: product?.name }} />
 
-      <Image
-        source={{uri: product?.image || defaultPizzaImage}}
+      <RemoteImage
+        // source={{uri: product?.image || defaultPizzaImage}}
+        path={product?.image}
+        fallback={defaultPizzaImage}
         // fallback={defaultPizzaImage}
         style={styles.image}
       />
 
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.title}>{product?.name}</Text>
+      <Text style={styles.price}>${product?.price}</Text>
     </View>
   );
 };

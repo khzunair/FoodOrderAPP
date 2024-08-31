@@ -2,18 +2,35 @@ import OrderItemListItem from '@/src/components/OrderItemListItem';
 import OrderListItem from '@/src/components/OrderListItem';
 import orders from '@/assets/data/orders';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import {
+  FlatList,
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import { OrderStatusList } from '@/src/types';
 import Colors from '../../constants/Colors';
+import { useOrderDetails, useUpdateOrder } from '@/src/api/orders';
 
 export default function OrderDetailsScreen() {
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
 
-  const order = orders.find((o) => o.id.toString() === id);
+  const { data: order, isLoading, error } = useOrderDetails(id);
+  const { mutate: updateOrder } = useUpdateOrder();
 
-  if (!order) {
-    return <Text>Not found</Text>;
+  const updateStatus = (status: string) => {
+    updateOrder({ id: id, updatedFields: { status } });
+  };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
+  if (error || !order) {
+    return <Text>Failed to fetch</Text>;
+  }
+
 
   return (
     <View style={{ padding: 10, gap: 20, flex: 1 }}>
@@ -31,7 +48,7 @@ export default function OrderDetailsScreen() {
     {OrderStatusList.map((status) => (
       <Pressable
         key={status}
-        onPress={() => console.warn('Update status')}
+        onPress={() => updateStatus(status)}
         style={{
           borderColor: Colors.light.tint,
           borderWidth: 1,
